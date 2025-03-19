@@ -21,7 +21,7 @@
 
   boot.loader.grub.enableCryptodisk = true;
 
-  boot.initrd.luks.devices."luks-6cf890ac-537d-4783-b369-1e317c575548".keyFile = "/boot/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-6xxxxxxxxxxxxx".keyFile = "/boot/crypto_keyfile.bin";
   networking.hostName = "tetomikulaptop";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant. (This is handled with networkmanager so... no)
 
