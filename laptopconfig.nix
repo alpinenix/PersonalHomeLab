@@ -1,21 +1,49 @@
 # This is my personal Configuration.nix, used specifically on my laptop. 
 # This config contains packages and confs for Pentest/Network testing, my RTL-SDR, and general virt software. 
+nixpkgs.overlays = [
+    (self: super: {
+      unstablePackages = import <nixos-unstable> {
+        config = config.nixpkgs.config;
+      };
+    })
+  ];{ config, pkgs, ... }:
 
-{ config, pkgs, ... }:
-
+let
+  unstable = import <nixos-unstable> {
+    config = config.nixpkgs.config;
+  };
+in
 {
-  nixpkgs.config.allowUnfree = true;
+  # Python packages for pentesting tools that might need them
+  nixpkgs.config.packageOverrides = pkgs: {
+    python3 = pkgs.python3.override {
+      packageOverrides = python-self: python-super: {
+        # Add any Python packages that might be needed for pentesting tools
+        # For example:
+        # pythonPkgs = python-self.pythonPackages;
+      };
+    };
+  };
+
+  # Allow Nix to find unfree packages
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      # Add any packages that might be marked as insecure but are needed
+      # For example: "openssl-1.0.2u"
+    ];
+  };
 
   services = {
     openssh = {
       enable = true;
       settings = {
         PermitRootLogin = "no";
-        PasswordAuthentication = true;
+        PasswordAuthentication = false;
       };
     };
     
-    printing.enable = false;
+    printing.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
@@ -39,28 +67,29 @@
     openssl
     bandwhich
     
-    burpsuite
-    zaproxy
-    metasploit
-    sqlmap
-    hydra
-    hashcat
-    john
-    aircrack-ng
-    kismet
-    wifite
-    dirb
-    nikto
-    macchanger
-    ettercap
-    wireshark-cli
-    ncrack
-    sslscan
-    masscan
-    crackmapexec
-    exploitdb
-    gobuster
-    recon-ng
+    # Pentesting tools from unstable channel
+    unstable.burpsuite
+    unstable.zaproxy
+    unstable.metasploit
+    unstable.sqlmap
+    unstable.hydra
+    unstable.hashcat
+    unstable.john
+    unstable.aircrack-ng
+    unstable.kismet
+    unstable.wifite
+    unstable.dirb
+    unstable.nikto
+    unstable.macchanger
+    unstable.ettercap
+    unstable.wireshark-cli
+    unstable.ncrack
+    unstable.sslscan
+    unstable.masscan
+    unstable.crackmapexec
+    unstable.exploitdb
+    unstable.gobuster
+    unstable.recon-ng
 
     rtl-sdr
     gqrx
@@ -75,6 +104,8 @@
     cubicsdr
     
     remmina
+    teamviewer
+    tigervnc
     x11vnc
     barrier
     libvncserver
@@ -166,7 +197,7 @@
     desktopManager.gnome.enable = true;
   };
 
-virtualisation = {
+  virtualisation = {
     docker.enable = true;
     libvirtd = {
       enable = true;
