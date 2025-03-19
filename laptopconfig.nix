@@ -1,52 +1,121 @@
 # This is my personal Configuration.nix, used specifically on my laptop. 
 # This config contains packages and confs for Pentest/Network testing, my RTL-SDR, and general virt software. 
-nixpkgs.overlays = [
-    (self: super: {
-      unstablePackages = import <nixos-unstable> {
-        config = config.nixpkgs.config;
-      };
-    })
-  ];{ config, pkgs, ... }:
 
-let
-  unstable = import <nixos-unstable> {
-    config = config.nixpkgs.config;
-  };
-in
+{ config, pkgs, ... }:
+
 {
-  # Python packages for pentesting tools that might need them
-  nixpkgs.config.packageOverrides = pkgs: {
-    python3 = pkgs.python3.override {
-      packageOverrides = python-self: python-super: {
-        # Add any Python packages that might be needed for pentesting tools
-        # For example:
-        # pythonPkgs = python-self.pythonPackages;
-      };
-    };
+  imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
+
+  # Bootloader.
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.useOSProber = true;
+
+  # Setup keyfile
+  boot.initrd.secrets = {
+    "/boot/crypto_keyfile.bin" = null;
   };
 
-  # Allow Nix to find unfree packages
-  nixpkgs.config = {
-    allowUnfree = true;
-    permittedInsecurePackages = [
-      # Add any packages that might be marked as insecure but are needed
-      # For example: "openssl-1.0.2u"
+  boot.loader.grub.enableCryptodisk = true;
+
+  boot.initrd.luks.devices."luks-6cf890ac-537d-4783-b369-1e317c575548".keyFile = "/boot/crypto_keyfile.bin";
+  networking.hostName = "tetomikulaptop";
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant. (This is handled with networkmanager so... no)
+
+
+  boot.kernelParams = [ "modprobe.blacklist=dvb_usb_rtl28xxu" ]; # blacklist this module
+
+  services.udev.packages = [ pkgs.rtl-sdr ];
+    
+  hardware.rtl-sdr.enable = true;
+
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
+  time.timeZone = "America/Chicago";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
+
+  # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
+  services.xserver.enable = true;
+
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  services.printing.enable = false;
+
+  # Enable sound with pipewire.
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  
+  users.users.jaming = {
+    isNormalUser = true;
+    description = "jaming";
+    extraGroups = [ 
+
+      "wheel"
+      "dialout"
+      "plugdev"
+      "wireshark"
+      "networkmanager"
+      "docker"
+      "libvirtd"
+      "kvm"
+
+ ];
+    packages = with pkgs; [
+      kdePackages.kate
+    #  thunderbird
     ];
   };
 
-  services = {
-    openssh = {
-      enable = true;
-      settings = {
-        PermitRootLogin = "no";
-        PasswordAuthentication = true;
-      };
-    };
-    
-    printing.enable = false;
-  };
+  
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
   environment.systemPackages = with pkgs; [
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    librewolf
+    sdrpp
+    libusb1
+    pkgs.rtl-sdr
+    gqrx
+
     wireshark
     nmap
     netcat
@@ -67,32 +136,28 @@ in
     openssl
     bandwhich
     
-    # Pentesting tools from unstable channel
-    unstable.burpsuite
-    unstable.zaproxy
-    unstable.metasploit
-    unstable.sqlmap
-    unstable.hydra
-    unstable.hashcat
-    unstable.john
-    unstable.aircrack-ng
-    unstable.kismet
-    unstable.wifite
-    unstable.dirb
-    unstable.nikto
-    unstable.macchanger
-    unstable.ettercap
-    unstable.wireshark-cli
-    unstable.ncrack
-    unstable.sslscan
-    unstable.masscan
-    unstable.crackmapexec
-    unstable.exploitdb
-    unstable.gobuster
-    unstable.recon-ng
-
-    rtl-sdr
-    gqrx
+    burpsuite
+    zap
+    metasploit
+    sqlmap
+    hydra
+    hashcat
+    john
+    aircrack-ng
+    kismet
+    wifite2
+    dirb
+    nikto
+    macchanger
+    ettercap
+    wireshark-cli
+    ncrack
+    sslscan
+    masscan
+    netexec
+    exploitdb
+    gobuster
+    
     gnuradio
     soapysdr
     soapyrtlsdr
@@ -104,8 +169,6 @@ in
     cubicsdr
     
     remmina
-    teamviewer
-    tigervnc
     x11vnc
     barrier
     libvncserver
@@ -115,6 +178,7 @@ in
     freerdp
 
     htop
+    btop
     glances
     tmux
     screen
@@ -133,54 +197,41 @@ in
     smartmontools
     killall
     psmisc
+    ventoy-full
 
     xorg.xhost
     pavucontrol
     virt-manager
     wireshark-qt
+    
   ];
 
-  hardware = {
-    rtl-sdr.enable = true;
-    bluetooth.enable = true;
-    pulseaudio.enable = true;
-  };
-
-  networking = {
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 
-        22
-        3389
-        5900
-        24800
-        5353
-        8080
-        8081
-        4444
-      ];
-      allowedUDPPorts = [
-        5353
-        67
-        68
-      ];
-    };
-    
-    networkmanager.enable = true;
-  };
-
-  users.users.YOUR_USERNAME = {
-    extraGroups = [ 
-      "wheel"
-      "dialout"
-      "plugdev"
-      "wireshark"
-      "networkmanager"
-      "docker"
-      "libvirtd"
-      "kvm"
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      22
+      3389
+      5900
+      24800
+      5353
+      8080
+      8081
+      4444
+    ];
+    allowedUDPPorts = [
+      5353
+      67
+      68
     ];
   };
+
+  services.openssh = {
+      enable = true;
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = true;
+      };
+    };
 
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2832", GROUP="plugdev", MODE="0666"
@@ -190,12 +241,6 @@ in
     
     ATTR{idVendor}=="1d50", ATTR{idProduct}=="60a1", SYMLINK+="airspy-%k", GROUP="plugdev", MODE="0666"
   '';
-
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-  };
 
   virtualisation = {
     docker.enable = true;
@@ -209,4 +254,7 @@ in
     };
     podman.enable = true;
   };
+  
+  system.stateVersion = "24.11"; # Did you read the comment? HA... no
+
 }
