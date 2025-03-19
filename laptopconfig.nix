@@ -39,11 +39,11 @@ in
       enable = true;
       settings = {
         PermitRootLogin = "no";
-        PasswordAuthentication = false;
+        PasswordAuthentication = true;
       };
     };
     
-    printing.enable = true;
+    printing.enable = false;
   };
 
   environment.systemPackages = with pkgs; [
