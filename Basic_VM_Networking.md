@@ -99,7 +99,9 @@ Use DHCP for network configuration or set static IPs in the 192.168.100.0/24 ran
 Set the default gateway to 192.168.100.1
 
   Please remember that this is a guide and what might work for me may not work for you. This exact network config is not what \
-I use on my Proxmox server but in general I see this as a good start as it seperates VMs from the outside network while still providing internet via NAT.
+I use on my Proxmox server but in general I see this as a good start as it seperates VMs from the outside network while still providing internet via NAT.\
+
+My only issue with this setup is it lacks an actual firewall. It depends on IPtables on the Proxmox host. While not bad, its not great and could be better.
 
 
 
