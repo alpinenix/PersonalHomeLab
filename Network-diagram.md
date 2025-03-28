@@ -1,4 +1,5 @@
-![network](https://github.com/user-attachments/assets/e703a2d8-8593-412f-a37d-319d675490d8)
+
+![network(2)](https://github.com/user-attachments/assets/ac096ca7-5db9-47ac-92f8-ce58a97f8c44)
 
 Network Topology Overview
 This document describes the advanced network architecture of my home laboratory environment, designed to provide comprehensive network segmentation, security testing, and advanced monitoring capabilities.
