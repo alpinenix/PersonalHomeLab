@@ -20,9 +20,9 @@ Purpose: Provides an additional layer of network security for exposed services
 
 Hosted Services:
 
-Pihole
-Searxng
-Nextcloud
+Pihole\
+Searxng\
+Nextcloud\
 Additional home services and applications
 
 
