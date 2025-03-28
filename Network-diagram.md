@@ -15,45 +15,45 @@ Network Range: 10.10.x.x
 Role: Demilitarized Zone for isolated services
 Advanced Security Components:
 
-SIEM | WAZUH (Security Information and Event Management)
-SOAR | SHUFFLE (Security Orchestration, Automation, and Response)
+SIEM | WAZUH (Security Information and Event Management)\
+SOAR | SHUFFLE (Security Orchestration, Automation, and Response)\
 
 
 Purpose:
 
-Provide a controlled environment for security tool testing
-Enable advanced threat detection and response capabilities
-Simulate complex network security scenarios
+Provide a controlled environment for security tool testing\
+Enable advanced threat detection and response capabilities\
+Simulate complex network security scenarios\
 
 
 3. General Home Network
 
 Hosted Services:
 
-Pihole (Network-wide ad blocking)
-Searxng (Private meta search engine)
-Nextcloud (Private cloud storage and productivity platform)
+Pihole (Network-wide ad blocking)\
+Searxng (Private meta search engine)\
+Nextcloud (Private cloud storage and productivity platform)\
 Additional home services and applications
 
 
 4. Pentest/Purple Team Network
 
-Purpose: Dedicated environment for security testing and research
+Purpose: Dedicated environment for security testing and research\
 Capabilities:
 
-Isolated network for offensive and defensive security practices
-Simulate attack and defense scenarios
-Test security tools and techniques
+Isolated network for offensive and defensive security practices\
+Simulate attack and defense scenarios\
+Test security tools and techniques\
 
 
 Isolation: Completely separated from main home network for maximum security
 
 Network Architecture Highlights
 
-Multi-layered network segmentation using different network bridges (VMBR0, VMBR1)
-Advanced security testing capabilities in DMZ
-Comprehensive isolation between different network segments
-Integrated security monitoring and response infrastructure
+Multi-layered network segmentation using different network bridges (VMBR0, VMBR1)\
+Advanced security testing capabilities in DMZ\
+Comprehensive isolation between different network segments\
+Integrated security monitoring and response infrastructure\
 
 Security Considerations
 
