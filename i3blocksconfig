@@ -1,0 +1,98 @@
+# i3blocks config file
+# ~/.config/i3blocks/config
+
+# Global properties
+separator_block_width=15
+markup=pango
+
+# Weather (requires curl)
+[weather]
+command=curl -s "wttr.in/?format=1" 2>/dev/null | head -1 || echo "Weather N/A"
+interval=600
+color=#4fc3f7
+separator=false
+
+[separator]
+full_text=|
+color=#757575
+separator=false
+
+# CPU Usage (using /proc/stat)
+[cpu_usage]
+command=awk '/^cpu / {usage=($2+$4)*100/($2+$3+$4+$5)} END {printf "  %.1f%%", usage}' /proc/stat
+interval=2
+color=#ff9800
+separator=false
+
+[separator2]
+full_text=|
+color=#757575
+separator=false
+
+# Memory Usage
+[memory]
+command=free -h | awk '/^Mem:/ {print "  " $3 "/" $2}'
+interval=5
+color=#9c27b0
+separator=false
+
+[separator3]
+full_text=|
+color=#757575
+separator=false
+
+# Disk Usage
+[disk]
+command=df -h / | awk 'NR==2 {print "  " $3 "/" $2 " (" $5 ")"}'
+interval=30
+color=#4caf50
+separator=false
+
+[separator4]
+full_text=|
+color=#757575
+separator=false
+
+# Network
+[network]
+command=ip route get 8.8.8.8 2>/dev/null | grep -Po '(?<=dev\s)\w+' | cut -f1 -d ' ' | xargs -I {} bash -c 'echo "  $(cat /sys/class/net/{}/operstate 2>/dev/null || echo down)"' | sed 's/up/Connected/g' | sed 's/down/Disconnected/g'
+interval=5
+color=#2196f3
+separator=false
+
+[separator5]
+full_text=|
+color=#757575
+separator=false
+
+# Volume (using amixer from alsa-utils)
+[volume]
+command=amixer get Master 2>/dev/null | grep -o '[0-9]*%' | head -1 | xargs -I {} echo "  {}" || echo "  N/A"
+interval=1
+signal=1
+color=#ff5722
+separator=false
+
+[separator6]
+full_text=|
+color=#757575
+separator=false
+
+# Battery (if laptop)
+[battery]
+command=acpi -b 2>/dev/null | grep -E -o '[0-9][0-9]?%' | head -1 | xargs -I {} echo "  {}" || echo ""
+interval=30
+color=#ffc107
+separator=false
+
+[separator7]
+full_text=|
+color=#757575
+separator=false
+
+# Date and Time
+[time]
+command=date '+  %Y-%m-%d   %H:%M:%S'
+interval=1
+color=#4fc3f7
+separator=false
