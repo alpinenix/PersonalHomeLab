@@ -109,10 +109,7 @@ install_network_tools() {
         tshark \
         ettercap \
         aircrack-ng \
-        reaver \
-        bully \
-        kismet \
-        hostapd-mana
+        kismet
 }
 
 # Install OSINT tools
